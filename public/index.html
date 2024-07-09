@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    
+</head>
+<style>
+    body {
+    font-family: "Poppins", sans-serif;
+    background-image: url("https://i.pinimg.com/564x/7a/ab/24/7aab241232d3c503fb220bc5d372207e.jpg");
+    color: #f0f0f0;
+}
+
+section {
+    text-align: center;
+    border-radius: 10px;
+    width: 400px;
+    margin: auto;
+    background-color: #3c3c3c; ;
+    margin-top: 75px;
+    box-shadow: 0px 10px 36px 16px rgba(0, 0, 0, 0.5);
+}
+
+.title {
+    font-family: "Poppins", sans-serif;
+    font-size: 36px; 
+    font-weight: bold; 
+    color: white;
+    text-transform: uppercase; 
+    text-align: center; 
+    padding: 20px 0; 
+    margin-top: 0; 
+    background: linear-gradient(135deg, #4b5a81, #000000); 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); 
+    letter-spacing: 2px; 
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    width: 300px;
+    margin: 20px auto; 
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.box {
+    font-family: "Poppins", sans-serif;
+    width: 100px; 
+    height: 100px; 
+    box-shadow: 0 0 0 1px white;
+    border: 1px solid #fff;
+    cursor: pointer;
+    line-height: 100px; 
+    font-size: 24px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.resbutt {
+    margin-bottom: 20px;
+    padding: 10px 20px; 
+    height: auto; 
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    background: linear-gradient(135deg, #6e8efb, #a777e3); 
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    font-size: 16px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+.resbutt:hover {
+    background: linear-gradient(135deg, #a777e3, #6e8efb); 
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); 
+}
+</style>
+<body>
+    <section>
+        <h1 class="title">Tic Tac Toe</h1>
+        <div class="container">
+            <div class="box" data-cell id="0"></div>
+            <div class="box" data-cell id="1"></div>
+            <div class="box" data-cell id="2"></div>
+            <div class="box" data-cell id="3"></div>
+            <div class="box" data-cell id="4"></div>
+            <div class="box" data-cell id="5"></div>
+            <div class="box" data-cell id="6"></div>
+            <div class="box" data-cell id="7"></div>
+            <div class="box" data-cell id="8"></div>
+        </div>
+        <h3 class="display"></h3>
+        <button class="resbutt">Replay</button>
+    </section>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        let name;
+
+        document.querySelectorAll(".box").forEach(e => {
+            e.addEventListener("click", function () {
+                let value = document.getElementById("value").innerText;
+                e.innerText = value;
+                socket.emit("playing", { value: value, id: e.id, name: name });
+            });
+        });
+
+        socket.on("playing", (e) => {
+            const foundObject = e.allPlayers.find(obj => obj.p1.p1name === name || obj.p2.p2name === name);
+            const p1id = foundObject.p1.p1move;
+            const p2id = foundObject.p2.p2move;
+
+            document.getElementById("whosTurn").innerText = foundObject.sum % 2 === 0 ? "O's Turn" : "X's Turn";
+
+            if (p1id) {
+                document.getElementById(`${p1id}`).innerText = "X";
+                document.getElementById(`${p1id}`).disabled = true;
+            }
+            if (p2id) {
+                document.getElementById(`${p2id}`).innerText = "O";
+                document.getElementById(`${p2id}`).disabled = true;
+            }
+
+            check(name, foundObject.sum);
+        });
+
+        function check(name, sum) {
+            
+        }
+    </script>
+</body>
+</html>
